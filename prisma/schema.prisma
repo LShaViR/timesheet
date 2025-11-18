@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------
+// ENUMS
+// -----------------------
+enum ApproveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// -----------------------
+// MODELS
+// -----------------------
+model Organization {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+
+  users   User[]
+  teams   Team[]
+  project Project[]
+}
+
+model User {
+  id          String @id @default(cuid())
+  displayName String
+  orgId       String
+  role        String
+
+  org         Organization @relation(fields: [orgId], references: [id])
+  teamMembers TMember[]
+  timesheets  Timesheet[]
+}
+
+model Team {
+  id    String @id @default(cuid())
+  name  String
+  orgId String
+
+  org      Organization @relation(fields: [orgId], references: [id])
+  members  TMember[]
+  projects Project[]
+}
+
+model TMember {
+  id     String @id @default(cuid())
+  userId String
+  teamId String
+  role   String
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
+}
+
+model Project {
+  id     String  @id @default(cuid())
+  teamId String?
+  orgId  String
+
+  team       Team?        @relation(fields: [teamId], references: [id])
+  org        Organization @relation(fields: [orgId], references: [id])
+  timesheets Timesheet[]
+}
+
+model Timesheet {
+  id        String        @id @default(cuid())
+  status    ApproveStatus @default(PENDING)
+  projectId String
+  userId    String
+
+  monday_duration    Int?
+  tuesday_duration   Int?
+  wednesday_duration Int?
+  thursday_duration  Int?
+  friday_duration    Int?
+  saturday_duration  Int?
+  sunday_duration    Int?
+
+  project Project @relation(fields: [projectId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}
