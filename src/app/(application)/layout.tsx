@@ -6,12 +6,10 @@ async function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <ProjectProvider>
-      <div>
-        <div className="h-16 flex justify-between">
-          <div>{user.firstName}</div>
-        </div>
-        <div>{children}</div>
+      <div className="h-16 flex justify-between pl-2 pt-4">
+        <div className="text-lg font-bold">{user.firstName}</div>
       </div>
+      <div>{children}</div>
     </ProjectProvider>
   );
 }

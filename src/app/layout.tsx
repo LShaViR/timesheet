@@ -57,7 +57,9 @@ export default function RootLayout({
                       </Flex>
 
                       <Flex flexGrow="1" align="center" justify="center">
-                        <main className="w-full">{children}</main>
+                        <main className="w-full h-full flex flex-col justify-center">
+                          {children}
+                        </main>
                       </Flex>
                     </Flex>
                   </Card>
